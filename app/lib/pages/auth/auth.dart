@@ -127,12 +127,12 @@ class _AuthPageState extends State<AuthPage> {
                             children: [
                               // const SizedBox(height:5,),
                               CustomTextField(
-                                  controller: _emailController..text='srihari@gmail.com',
+                                  controller: _emailController,
                                   placeHolder: "email"
                               ),
                               const SizedBox(height:10,),
                               CustomTextField(
-                                controller: _passwordController..text='srihari',
+                                controller: _passwordController,
                                 placeHolder: "password",
                               ),
                               const SizedBox(height:10,),

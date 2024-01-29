@@ -1,105 +1,118 @@
-import 'package:app/styles/styles.dart';
+import 'package:app/provider/user_provider.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
-import './../services/services.dart';
+import './../styles/styles.dart';
+import './../pages/pages.dart';
+import 'package:provider/provider.dart';
 
-class BottomBar extends StatefulWidget{
-  const BottomBar({super.key});
-  static const routeName = "/actual-home";
-    @override
-    State<BottomBar>createState()=>_BottomBarState();
+class BottomBar extends StatefulWidget {
+  static const String routeName = '/actual-home';
+  const BottomBar({Key? key}) : super(key: key);
+
+  @override
+  State<BottomBar> createState() => _BottomBarState();
 }
 
-class _BottomBarState extends State<BottomBar>{
-     int _page = 0;
-     double bottomBarWidth = 42;
-     double bottomBorderBarWidth = 4;
-     @override
-     Widget build(BuildContext context) {
-       return Scaffold(
-         body:Center(
-          child:ElevatedButton(
-               child: Text("clickme"),
-               onPressed:()=>{
-                    CartServices().getProduct()
-               },
-          )
-         ),
-          bottomNavigationBar:BottomNavigationBar(
-                onTap: (value) => setState(() {
-                  _page = value;
-                }),
-                unselectedItemColor:AppColor.unselectedNavBarColor,
-                selectedItemColor: AppColor.selectedNavBarColor,
-                iconSize:28,
-                currentIndex:_page,
-                backgroundColor: AppColor.backgroundColor,
-                items: [
-                  BottomNavigationBarItem(
-                    icon:Container(
-                          width:bottomBarWidth,
-                          decoration: BoxDecoration(
-                              border:Border(
-                                  top:BorderSide(
-                                      color:_page==0?
-                                      AppColor.selectedNavBarColor:
-                                      AppColor.backgroundColor,
-                                    width: bottomBorderBarWidth
-                                  )
-                              )
-                          ),
-                          child:const Icon(
-                            Icons.home_outlined
-                          ),
+class _BottomBarState extends State<BottomBar> {
+  int _page = 0;
+  double bottomBarWidth = 42;
+  double bottomBarBorderWidth = 5;
 
-                    ),
-                    label: ''
+
+  List<Widget> pages = [
+    const HomeScreen(),
+    const AccountScreen(),
+    const CartScreen()
+  ];
+
+  void updatePage(int page) {
+    setState(() {
+      _page = page;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userCartLen = context.watch<UserProvider>().user.cart.length;
+    return Scaffold(
+      body: pages[_page],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _page,
+        selectedItemColor: AppColor.selectedNavBarColor,
+        unselectedItemColor: AppColor.unselectedNavBarColor,
+        backgroundColor: AppColor.backgroundColor,
+        iconSize: 28,
+        onTap: updatePage,
+        items: [
+          // HOME
+          BottomNavigationBarItem(
+            icon: Container(
+              width: bottomBarWidth,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: _page == 0
+                        ? AppColor.selectedNavBarColor
+                        : AppColor.backgroundColor,
+                    width: bottomBarBorderWidth,
                   ),
-                  BottomNavigationBarItem(
-                    icon:Container(
-                          width:bottomBarWidth,
-                          decoration: BoxDecoration(
-                              border:Border(
-                                  top:BorderSide(
-                                      color:_page==1?
-                                      AppColor.selectedNavBarColor:
-                                      AppColor.backgroundColor,
-                                    width: bottomBorderBarWidth
-                                  )
-                              )
-                          ),
-                          child:const Icon(
-                            Icons.person_outline_outlined
-                          ),
-                    ),
-                    label: ''
-                  ),
-                   BottomNavigationBarItem(
-                    icon:Container(
-                        margin:const EdgeInsets.only(right:60),
-                         child:Stack(
-                            children: [
-                               const Positioned(
-                                  child:
-                                  Icon(
-                                    Icons.shopping_bag_outlined,
-                                  )
-                                 ),
-                                 Positioned(
-                                   left:24,
-                                   child:Container(
-                                      decoration:BoxDecoration(
-                                          color:AppColor.selectedNavBarColor
-                                      ),
-                                      child:Text("1")
-                                    )
-                                 )
-                            ],
-                         ),
-                    ),
-                    label: ''
-                  )
-                ],
+                ),
+              ),
+              child: const Icon(
+                Icons.home_outlined,
+              ),
+            ),
+            label: '',
           ),
-       );
-     }
+          // ACCOUNT
+          BottomNavigationBarItem(
+            icon: Container(
+              width: bottomBarWidth,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: _page == 1
+                        ? AppColor.selectedNavBarColor
+                        : AppColor.backgroundColor,
+                    width: bottomBarBorderWidth,
+                  ),
+                ),
+              ),
+              child: const Icon(
+                Icons.person_outline_outlined,
+              ),
+            ),
+            label: '',
+          ),
+          // CART
+          BottomNavigationBarItem(
+            icon: Container(
+              width: bottomBarWidth,
+              decoration: BoxDecoration(
+                border: Border(
+                  top: BorderSide(
+                    color: _page == 2
+                        ? AppColor.selectedNavBarColor
+                        : AppColor.backgroundColor,
+                    width: bottomBarBorderWidth,
+                  ),
+                ),
+              ),
+              child: badges.Badge(
+                badgeContent: Text("$userCartLen"),
+                badgeStyle: const badges.BadgeStyle(
+                    badgeColor: Colors.white,
+                    elevation:1,
+                ),
+                child:const Icon(
+                  Icons.shopping_cart_outlined,
+                ),
+              ),
+            ),
+            label: '',
+          ),
+        ],
+      ),
+    );
+  }
 }

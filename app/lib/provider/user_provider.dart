@@ -3,23 +3,28 @@ import 'package:flutter/material.dart';
 
 
 class UserProvider extends ChangeNotifier{
-       User _user = User(id: '', name: '', email: '', password: '', token: '');
+      User _user = User(
+    id: '',
+    name: '',
+    email: '',
+    password: '',
+    address: '',
+    type: '',
+    token: '',
+    cart: [],
+  );
 
-       /* getter and setter 
-           
-           return_type get field_name{
+  User get user => _user;
 
-           } 
+  void setUser(String user) {
+    _user = User.fromJson(user);
+    notifyListeners();
+  }
 
-           int get num => _n;
+  void setUserFromModel(User user) {
+    _user = user;
+    notifyListeners();
+  }
 
-       **/
-
-       User get user => _user;
-
-       void setUser(dynamic user){
-           _user  = User.fromMap(user['restData']);
-           notifyListeners();
-       }
        
 }
